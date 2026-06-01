@@ -14,7 +14,6 @@ return new class extends Migration
             $table->string('name');
             $table->text('content');
             $table->timestamp('date_added')->useCurrent();
-            $table->timestamps();
         });
     }
 

@@ -1,8 +1,11 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\IsAdmin;
+use App\Http\Controllers\ClassesController;
+use App\Http\Controllers\ProfileController;
+
+Route::resource('classes', ClassesController::class)->only(['index', 'show']);
 
 Route::middleware(['auth', IsAdmin::class])->prefix('admin')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'index'])->name('admin.dashboard');
