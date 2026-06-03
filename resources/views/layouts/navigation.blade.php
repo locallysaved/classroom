@@ -16,6 +16,13 @@
                         {{ __('Dashboard') }}
                     </x-nav-link>
                 </div>
+                <div>
+                    @if(auth()->user()->isStudent())
+                        <x-nav-link :href="route('classes.join.form')" :active="request()->routeIs('classes.join.form')">
+                            Join a Class
+                        </x-nav-link>
+                    @endif
+                </div>
             </div>
 
             <!-- Settings Dropdown -->
