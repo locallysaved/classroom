@@ -32,8 +32,9 @@ class ClassesController extends Controller
             abort(403);
         }
 
-        $class->load(['tasks', 'teacher']);
+        $class->load(['tasks' => fn($q) => $q->withCount('files'), 'teacher', 'students']);
         return view('classes.show', compact('class'));
+        
     }
 
     public function create()
@@ -54,4 +55,5 @@ class ClassesController extends Controller
 
         return redirect()->route('classes.index')->with('success', 'Class created successfully.');
     }
+
 }

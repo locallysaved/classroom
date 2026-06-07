@@ -1,62 +1,108 @@
 <x-app-layout>
     <x-slot name="header">
-        <div class="flex items-center gap-3">
-            <a href="{{ route('classes.show', $class) }}" class="text-gray-400 hover:text-gray-600 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        <div style="display:flex;align-items:center;gap:12px;">
+            <a href="{{ route('classes.show', $class) }}"
+               style="color:var(--muted);display:flex;align-items:center;text-decoration:none;
+                      padding:6px;border-radius:6px;transition:background .15s;"
+               onmouseenter="this.style.background='var(--bg)'"
+               onmouseleave="this.style.background='transparent'">
+                <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                 </svg>
             </a>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Add Task to <span class="text-indigo-600">{{ $class->name }}</span>
-            </h2>
+            <div>
+                <h1 style="font-size:20px;">Add Task</h1>
+                <p style="font-size:13px;color:var(--muted);margin-top:2px;">
+                    to <span style="color:var(--red);font-weight:600;">{{ $class->name }}</span>
+                </p>
+            </div>
         </div>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-2xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white rounded-xl shadow p-8">
+    <div style="max-width:560px;margin:0 auto;">
 
-                @if($errors->any())
-                    <div class="mb-6 p-4 bg-red-50 text-red-600 rounded-lg text-sm">
-                        <ul class="list-disc list-inside space-y-1">
-                            @foreach($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
-
-                <form action="{{ route('tasks.store') }}" method="POST" class="space-y-6">
-                    @csrf
-                    <input type="hidden" name="class_id" value="{{ $class->id }}">
-
-                    <div>
-                        <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Task Name</label>
-                        <input type="text" name="name" id="name" value="{{ old('name') }}"
-                               class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                               placeholder="e.g. Chapter 3 Assignment" required>
-                    </div>
-
-                    <div>
-                        <label for="content" class="block text-sm font-medium text-gray-700 mb-1">Content</label>
-                        <textarea name="content" id="content" rows="5"
-                                  class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                                  placeholder="Describe the task..." required>{{ old('content') }}</textarea>
-                    </div>
-
-                    <div class="flex justify-end gap-3">
-                        <a href="{{ route('classes.show', $class) }}"
-                           class="px-4 py-2.5 text-sm font-medium text-gray-600 hover:text-gray-800 transition-colors">
-                            Cancel
-                        </a>
-                        <button type="submit"
-                                class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-6 py-2.5 rounded-lg transition-colors duration-200">
-                            Add Task
-                        </button>
-                    </div>
-                </form>
-
+        @if($errors->any())
+            <div class="alert-error" style="margin-bottom:16px;">
+                <ul style="list-style:disc;padding-left:16px;display:flex;flex-direction:column;gap:4px;">
+                    @foreach($errors->all() as $error)
+                        <li style="font-size:13px;">{{ $error }}</li>
+                    @endforeach
+                </ul>
             </div>
+        @endif
+
+        {{-- Red card matching wireframe --}}
+        <div style="background:var(--red);border-radius:12px;padding:24px;
+                    display:flex;flex-direction:column;gap:14px;">
+
+            <form action="{{ route('tasks.store') }}" method="POST"
+      enctype="multipart/form-data"
+      style="display:flex;flex-direction:column;gap:12px;">
+                @csrf
+                <input type="hidden" name="class_id" value="{{ $class->id }}">
+
+                <input type="text" name="name" id="name" value="{{ old('name') }}"
+                       placeholder="add task name"
+                       required
+                       style="width:100%;border:none;border-radius:8px;
+                              padding:11px 14px;font-size:14px;font-family:inherit;
+                              color:var(--text);background:#fff;outline:none;
+                              box-shadow:0 1px 3px rgba(0,0,0,.08);">
+
+                <textarea name="content" id="content" rows="4"
+                          placeholder="access for this content info"
+                          required
+                          style="width:100%;border:none;border-radius:8px;
+                                 padding:11px 14px;font-size:14px;font-family:inherit;
+                                 color:var(--text);background:#fff;outline:none;
+                                 resize:vertical;box-shadow:0 1px 3px rgba(0,0,0,.08);">{{ old('content') }}</textarea>
+
+                <div>
+                    {{-- File upload --}}
+                <div>
+                    <label for="files"
+                           style="display:flex;align-items:center;justify-content:center;gap:8px;
+                                  background:#fff;border-radius:8px;padding:11px 14px;
+                                  font-size:13px;color:var(--muted);cursor:pointer;
+                                  border:2px dashed rgba(0,0,0,.15);
+                                  box-shadow:0 1px 3px rgba(0,0,0,.08);transition:border-color .15s;"
+                           onmouseenter="this.style.borderColor='var(--red-dark)'"
+                           onmouseleave="this.style.borderColor='rgba(0,0,0,.15)'">
+                        <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                  d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828L18 9.828A4 4 0 1012.343 4.343L5.757 10.929"/>
+                        </svg>
+                        add files
+                    </label>
+                    <input type="file" name="files[]" id="files" multiple
+                           style="display:none;" onchange="showFiles(this)">
+                    <ul id="file-list" style="margin-top:8px;display:flex;flex-direction:column;gap:4px;"></ul>
+                </div>
+                    <button type="submit"
+                            style="background:var(--red-dark);color:#fff;border:none;
+                                   border-radius:8px;padding:9px 20px;font-size:13px;
+                                   font-weight:600;font-family:inherit;cursor:pointer;
+                                   transition:opacity .15s;"
+                            onmouseenter="this.style.opacity='.85'"
+                            onmouseleave="this.style.opacity='1'">
+                        add task
+                    </button>
+                </div>
+            </form>
+
         </div>
     </div>
+    <script>
+    function showFiles(input) {
+        const list = document.getElementById('file-list');
+        list.innerHTML = '';
+        Array.from(input.files).forEach(f => {
+            const li = document.createElement('li');
+            li.style = 'font-size:12px;color:#fff;background:rgba(0,0,0,.18);border-radius:6px;'
+                     + 'padding:5px 10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;';
+            li.textContent = f.name;
+            list.appendChild(li);
+        });
+    }
+    </script>
 </x-app-layout>

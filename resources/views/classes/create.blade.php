@@ -1,60 +1,58 @@
-!
-ds<x-app-layout>
+<x-app-layout>
     <x-slot name="header">
-        <div class="flex items-center gap-3">
-            <a href="{{ route('classes.index') }}" class="text-gray-400 hover:text-gray-600 transition-colors">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        <div style="display:flex;align-items:center;gap:12px;">
+            <a href="{{ route('classes.index') }}"
+               style="color:var(--muted);display:flex;align-items:center;text-decoration:none;
+                      padding:6px;border-radius:6px;transition:background .15s;"
+               onmouseenter="this.style.background='var(--bg)'"
+               onmouseleave="this.style.background='transparent'">
+                <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                 </svg>
             </a>
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">Create Class</h2>
+            <h1>Create Class</h1>
         </div>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-2xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white rounded-xl shadow p-8">
+    <div style="max-width:600px;margin:0 auto;">
+        <div class="card card-body">
 
-                @if($errors->any())
-                    <div class="mb-6 p-4 bg-red-50 text-red-600 rounded-lg text-sm">
-                        <ul class="list-disc list-inside space-y-1">
-                            @foreach($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
+            @if($errors->any())
+                <div class="alert-error">
+                    <ul style="list-style:disc;padding-left:16px;display:flex;flex-direction:column;gap:4px;">
+                        @foreach($errors->all() as $error)
+                            <li style="font-size:13px;">{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
 
-                <form action="{{ route('classes.store') }}" method="POST" class="space-y-6">
-                    @csrf
+            <form action="{{ route('classes.store') }}" method="POST" style="display:flex;flex-direction:column;gap:20px;">
+                @csrf
 
-                    <div>
-                        <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Class Name</label>
-                        <input type="text" name="name" id="name" value="{{ old('name') }}"
-                               class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                               placeholder="e.g. Mathematics 101" required>
-                    </div>
+                <div>
+                    <label for="name" class="form-label">Class Name</label>
+                    <input type="text" name="name" id="name" value="{{ old('name') }}"
+                           class="form-input"
+                           placeholder="e.g. Mathematics 101" required>
+                </div>
 
-                    <div>
-                        <label for="description" class="block text-sm font-medium text-gray-700 mb-1">Description <span class="text-gray-400">(optional)</span></label>
-                        <textarea name="description" id="description" rows="4"
-                                  class="w-full border border-gray-300 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                                  placeholder="Brief description of the class...">{{ old('description') }}</textarea>
-                    </div>
+                <div>
+                    <label for="description" class="form-label">
+                        Description
+                        <span style="color:var(--muted);font-weight:400;margin-left:4px;">(optional)</span>
+                    </label>
+                    <textarea name="description" id="description" rows="4"
+                              class="form-textarea"
+                              placeholder="Brief description of the class...">{{ old('description') }}</textarea>
+                </div>
 
-                    <div class="flex justify-end gap-3">
-                        <a href="{{ route('classes.index') }}"
-                           class="px-4 py-2.5 text-sm font-medium text-gray-600 hover:text-gray-800 transition-colors">
-                            Cancel
-                        </a>
-                        <button type="submit"
-                                class="bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-medium px-6 py-2.5 rounded-lg transition-colors duration-200">
-                            Create Class
-                        </button>
-                    </div>
-                </form>
+                <div style="display:flex;justify-content:flex-end;gap:10px;padding-top:4px;">
+                    <a href="{{ route('classes.index') }}" class="btn btn-ghost">Cancel</a>
+                    <button type="submit" class="btn btn-primary">Create Class</button>
+                </div>
+            </form>
 
-            </div>
         </div>
     </div>
 </x-app-layout>

@@ -35,7 +35,7 @@ class User extends Authenticatable
 
     public function enrolledClasses(): BelongsToMany
     {
-        return $this->belongsToMany(Classes::class, 'class_student');
+        return $this->belongsToMany(Classes::class, 'class_student', 'user_id', 'class_id');
     }
     protected function casts(): array
     {

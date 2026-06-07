@@ -6,6 +6,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TasksController;
 use App\Http\Middleware\IsTeacher;
 use Illuminate\Support\Facades\Route;
+use App\Models\Tasks;
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -45,5 +47,10 @@ Route::middleware('auth')->group(function () {
     Route::get('/classes/{class}', [ClassesController::class, 'show'])->name('classes.show');
 
 });
+Route::get('/tasks/{task}',                  [TasksController::class, 'show'])->name('tasks.show');
+Route::post('/tasks/{task}/solution',        [TasksController::class, 'submitSolution'])->name('tasks.submitSolution');
+Route::post('/tasks/{task}/comment',         [TasksController::class, 'storeComment'])->name('tasks.comment');
+Route::get('/task-files/{file}/download',    [TasksController::class, 'downloadFile'])->name('task-files.download');
+Route::get('/solutions/{solution}/download', [TasksController::class, 'downloadSolution'])->name('solutions.download');
 
 require __DIR__.'/auth.php';
