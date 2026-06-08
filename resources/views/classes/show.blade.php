@@ -57,7 +57,8 @@
                             <span id="join-code-display"
                                   style="font-family:monospace;font-size:28px;font-weight:800;
                                          letter-spacing:.15em;color:var(--red);
-                                         background:var(--red-light);padding:10px 18px;border-radius:10px;">
+                                         background:#fff;padding:10px 18px;border-radius:10px;
+                                         border:2px solid var(--red);">
                                 {{ $class->join_code }}
                             </span>
                             <button onclick="copyCode('{{ $class->join_code }}')"
@@ -96,7 +97,7 @@
                         display:flex;align-items:center;justify-content:space-between;">
                 <div style="display:flex;align-items:center;gap:10px;">
                     <span style="font-size:15px;font-weight:700;">Tasks</span>
-                    <span style="font-size:12px;background:var(--red-light);color:var(--red);
+                    <span style="font-size:12px;background:var(--red);color:#fff;
                                  font-weight:600;padding:2px 10px;border-radius:20px;">
                         {{ $class->tasks->count() }} {{ Str::plural('task', $class->tasks->count()) }}
                     </span>
@@ -124,7 +125,7 @@
         <li style="border-bottom:1px solid var(--border);">
             <a href="{{ route('tasks.show', $task) }}"
                style="display:block;padding:16px 24px;text-decoration:none;transition:background .15s;"
-               onmouseenter="this.style.background='#FAFAFA'"
+               onmouseenter="this.style.background='var(--red-light)'"
                onmouseleave="this.style.background=''">
                 <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;">
                     <div style="flex:1;">

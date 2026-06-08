@@ -7,6 +7,7 @@ use App\Models\TaskComment;
 use App\Models\Tasks;
 use App\Models\Classes;
 use Illuminate\Http\Request;
+use App\Models\ActivityLog;
 
 class TasksController extends Controller
 {
@@ -26,6 +27,11 @@ class TasksController extends Controller
     ]);
 
     $task = Tasks::create($request->only('class_id', 'name', 'content'));
+    ActivityLog::create([
+    'user_id'     => auth()->id(),
+    'type'        => 'task_created',
+    'description' => 'Created task "' . $task->name . '" in class "' . $task->class->name . '"',
+]);
 
     foreach ($request->file('files', []) as $file) {
         $filename     = uniqid() . '.' . $file->getClientOriginalExtension();
@@ -45,11 +51,12 @@ class TasksController extends Controller
 }
 
     public function show(Tasks $task)
-    {
-        $task->load('files', 'comments.user', 'class');
-        $mySolutions = $task->solutions()->where('user_id', auth()->id())->get();
-        return view('tasks.show', compact('task', 'mySolutions'));
-    }
+{
+    $task->load('files', 'comments.user', 'class');
+    $mySolutions  = $task->solutions()->where('user_id', auth()->id())->get();
+    $allSolutions = $task->solutions()->with('user')->orderBy('user_id')->get();
+    return view('tasks.show', compact('task', 'mySolutions', 'allSolutions'));
+}
 
 public function submitSolution(Request $request, Tasks $task)
 {

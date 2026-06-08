@@ -6,6 +6,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\TasksController;
 use App\Http\Middleware\IsTeacher;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AdminController;
 use App\Models\Tasks;
 
 
@@ -52,5 +53,10 @@ Route::post('/tasks/{task}/solution',        [TasksController::class, 'submitSol
 Route::post('/tasks/{task}/comment',         [TasksController::class, 'storeComment'])->name('tasks.comment');
 Route::get('/task-files/{file}/download',    [TasksController::class, 'downloadFile'])->name('task-files.download');
 Route::get('/solutions/{solution}/download', [TasksController::class, 'downloadSolution'])->name('solutions.download');
+
+Route::get('/admin/users',              [AdminController::class, 'users'])->name('admin.users');
+Route::patch('/admin/users/{user}/role',[AdminController::class, 'updateRole'])->name('admin.users.role');
+Route::delete('/admin/users/{user}',    [AdminController::class, 'destroy'])->name('admin.users.destroy');
+Route::get('/admin/activity', [AdminController::class, 'activity'])->name('admin.activity');
 
 require __DIR__.'/auth.php';

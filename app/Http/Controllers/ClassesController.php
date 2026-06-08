@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Classes;
 use Illuminate\Http\Request;
+use App\Models\ActivityLog;
 
 class ClassesController extends Controller
 {
@@ -34,7 +35,6 @@ class ClassesController extends Controller
 
         $class->load(['tasks' => fn($q) => $q->withCount('files'), 'teacher', 'students']);
         return view('classes.show', compact('class'));
-        
     }
 
     public function create()
@@ -51,9 +51,14 @@ class ClassesController extends Controller
 
         $validated['user_id'] = auth()->id();
 
-        Classes::create($validated);
+        $class = Classes::create($validated);
+
+        ActivityLog::create([
+            'user_id'     => auth()->id(),
+            'type'        => 'class_created',
+            'description' => 'Created class "' . $class->name . '"',
+        ]);
 
         return redirect()->route('classes.index')->with('success', 'Class created successfully.');
     }
-
 }

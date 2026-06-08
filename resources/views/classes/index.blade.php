@@ -2,14 +2,6 @@
     <x-slot name="header">
         <div style="display:flex;align-items:center;justify-content:space-between;">
             <h1>Classes</h1>
-            @if(auth()->user()->isTeacher() || auth()->user()->isAdmin())
-                <a href="{{ route('classes.create') }}" class="btn btn-primary">
-                    <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 4v16m8-8H4"/>
-                    </svg>
-                    Create Class
-                </a>
-            @endif
         </div>
     </x-slot>
 
@@ -53,8 +45,8 @@
                                 {{ $class->teacher->name ?? 'Unknown' }}
                             </div>
                             <div style="display:flex;align-items:center;gap:4px;font-size:12px;
-                                        color:var(--red);font-weight:600;
-                                        background:var(--red-light);padding:3px 10px;border-radius:20px;">
+                                        color:#fff;font-weight:600;
+                                        background:var(--red);padding:3px 10px;border-radius:20px;">
                                 <svg width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                           d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
