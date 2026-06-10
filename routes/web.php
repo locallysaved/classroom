@@ -43,6 +43,7 @@ Route::middleware('auth')->group(function () {
     });
 
     // Classes
+    Route::delete('/classes/{class}', [ClassesController::class, 'destroy'])->name('classes.destroy');
     Route::get('/classes', [ClassesController::class, 'index'])->name('classes.index');
     Route::get('/classes/{class}', [ClassesController::class, 'show'])->name('classes.show');
 
@@ -50,8 +51,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/tasks/{tasks}/files', [TaskFileController::class, 'store'])->name('task-files.store');
     Route::get('/task-files/{taskFile}/download', [TaskFileController::class, 'download'])->name('task-files.download');
     Route::delete('/task-files/{taskFile}', [TaskFileController::class, 'destroy'])->name('task-files.destroy');
+    Route::delete('/tasks/{task}', [TasksController::class, 'destroy'])->name('tasks.destroy');
 
-    // Tasks (from your buddy's additions)
     Route::get('/tasks/{task}', [TasksController::class, 'show'])->name('tasks.show');
     Route::post('/tasks/{task}/solution', [TasksController::class, 'submitSolution'])->name('tasks.submitSolution');
     Route::post('/tasks/{task}/comment', [TasksController::class, 'storeComment'])->name('tasks.comment');

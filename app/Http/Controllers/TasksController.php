@@ -22,16 +22,18 @@ class TasksController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'class_id' => 'required|exists:classes,id',
-            'name'     => 'required|string|max:255',
-            'content'  => 'required|string',
-            'files.*'  => 'nullable|file|max:20480',
+            'class_id'  => 'required|exists:classes,id',
+            'name'      => 'required|string|max:255',
+            'content'   => 'required|string',
+            'due_date'  => 'nullable|date|after_or_equal:today',
+            'files.*'   => 'nullable|file|max:20480',
         ]);
 
         $task = Tasks::create([
             'class_id'   => $request->class_id,
             'name'       => $request->name,
             'content'    => $request->content,
+            'due_date'   => $request->due_date,
             'date_added' => now(),
         ]);
 
@@ -164,5 +166,18 @@ class TasksController extends Controller
             storage_path('app/' . $solution->filename),
             $solution->original_name
         );
+    }
+
+    public function destroy(Tasks $task)
+    {
+        abort_unless(
+            auth()->user()->isAdmin() || $task->class->user_id === auth()->id(),
+            403
+        );
+
+        $classId = $task->class_id;
+        $task->delete();
+
+        return redirect()->route('classes.show', $classId)->with('success', 'Task deleted.');
     }
 }

@@ -10,6 +10,7 @@
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                 </svg>
             </a>
+            
             <div>
                 <h1 style="font-size:20px;">{{ $task->name }}</h1>
                 <p style="font-size:13px;color:rgba(255,255,255,.65);margin-top:2px;">
@@ -63,17 +64,30 @@
         <div style="display:flex;flex-direction:column;gap:16px;">
 
             {{-- Task info card --}}
-            <div class="card">
-                <div style="background:var(--red);padding:16px 20px;border-radius:12px 12px 0 0;">
-                    <p style="font-size:16px;font-weight:700;color:#fff;">{{ $task->name }}</p>
-                    <p style="font-size:12px;color:rgba(255,255,255,.65);margin-top:3px;">
-                        {{ $task->class->name }} &mdash; {{ \Carbon\Carbon::parse($task->date_added)->format('d M Y') }}
-                    </p>
+                <div style="background:var(--red);padding:16px 20px;border-radius:12px 12px 0 0;
+                            display:flex;align-items:center;justify-content:space-between;gap:16px;">
+                    <div>
+                        <p style="font-size:16px;font-weight:700;color:#fff;">{{ $task->name }}</p>
+                        <p style="font-size:12px;color:rgba(255,255,255,.65);margin-top:3px;">
+                            {{ $task->class->name }} &mdash; {{ \Carbon\Carbon::parse($task->date_added)->format('d M Y') }}
+                        </p>
+                    </div>
+                    @if(auth()->user()->isAdmin() || auth()->user()->id === $task->class->user_id)
+                        <form action="{{ route('tasks.destroy', $task) }}" method="POST"
+                            onsubmit="return confirm('Delete this task? This cannot be undone.');">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit"
+                                    style="background:rgba(0,0,0,.2);color:#fff;border:1px solid rgba(255,255,255,.3);
+                                        border-radius:8px;padding:7px 14px;font-size:13px;font-weight:600;
+                                        font-family:inherit;cursor:pointer;transition:background .15s;white-space:nowrap;"
+                                    onmouseenter="this.style.background='rgba(0,0,0,.4)'"
+                                    onmouseleave="this.style.background='rgba(0,0,0,.2)'">
+                                Delete Task
+                            </button>
+                        </form>
+                    @endif
                 </div>
-                <div class="card-body">
-                    <p style="font-size:14px;color:var(--text);line-height:1.7;">{{ $task->content }}</p>
-                </div>
-            </div>
 
             {{-- Teacher's files --}}
             <div class="card card-body">

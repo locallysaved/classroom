@@ -13,7 +13,10 @@ class Tasks extends Model
 {
     public $timestamps = false;
     protected $fillable = ['class_id', 'name', 'content', 'date_added', 'due_date'];
-
+    protected $casts = [
+        'due_date'   => 'date',
+        'date_added' => 'datetime',
+];
 
 public function comments(): HasMany
 {

@@ -12,7 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('tasks', function (Blueprint $table) {
-            $table->timestamp('due_date')->nullable()->after('date_added');
+            // in the migration up()
+            $table->date('due_date')->nullable();
         });
     }
 

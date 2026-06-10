@@ -23,14 +23,28 @@
                     <form action="{{ route('profile.avatar') }}" method="POST" enctype="multipart/form-data" style="display:flex;align-items:center;gap:12px;">
                         @csrf
                         @method('PATCH')
-                        <input type="file" name="avatar" accept="image/*"
-                        onchange="previewAvatar(this)"
-                        style="font-size:14px;color:var(--muted);">
-                        <button type="submit"
-                                class="btn btn-primary">
-                            Upload
-                        </button>
-                    </form>
+                        <label for="avatar"
+                            style="display:flex;align-items:center;gap:8px;cursor:pointer;
+                                    border:1.5px solid var(--border);border-radius:8px;
+                                    padding:9px 14px;font-size:13px;color:var(--muted);
+                                    font-family:inherit;transition:border-color .15s;background:var(--bg);"
+                            onmouseenter="this.style.borderColor='var(--orange)'"
+                            onmouseleave="this.style.borderColor='var(--border)'">
+                            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828L18 9.828A4 4 0 1012.343 4.343L5.757 10.929"/>
+                            </svg>
+                            <span id="avatar-label">Choose image</span>
+                        </label>
+                        <input type="file" name="avatar" id="avatar" accept="image/*"
+                            style="display:none;" onchange="previewAvatar(this)">
+                            <button type="submit" id="avatar-submit"
+                                    class="btn btn-primary"
+                                    disabled
+                                    style="opacity:.4;cursor:not-allowed;">
+                                Upload
+                            </button>
+                        </form>
                     @error('avatar')
                         <p style="font-size:14px;color:var(--danger);margin-top:8px;">{{ $message }}</p>
                     @enderror
@@ -55,13 +69,15 @@
 
     <script>
         function previewAvatar(input) {
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = e => {
-                    document.getElementById('avatar-preview').src = e.target.result;
-                };
-                reader.readAsDataURL(input.files[0]);
-            }
+            if (!input.files || !input.files[0]) return;
+            const preview = document.getElementById('avatar-preview');
+            const submit  = document.getElementById('avatar-submit');
+            preview.src = URL.createObjectURL(input.files[0]);
+            preview.style.border = '2.5px solid #e8621a';
+            document.getElementById('avatar-label').textContent = input.files[0].name;
+            submit.disabled = false;
+            submit.style.opacity = '1';
+            submit.style.cursor = 'pointer';
         }
     </script>
 </x-app-layout>

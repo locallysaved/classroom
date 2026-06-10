@@ -1,106 +1,130 @@
 <x-guest-layout>
-    <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:var(--bg);">
-        <div style="width:100%;max-width:400px;padding:16px;">
+    <div style="min-height:100vh;display:flex;align-items:center;justify-content:center;
+                background:var(--bg);padding:24px;">
 
-            {{-- Logo / Title --}}
-            <div style="text-align:center;margin-bottom:28px;">
-                <div style="width:48px;height:48px;background:var(--red);border-radius:12px;
-                            margin:0 auto 12px;display:flex;align-items:center;justify-content:center;">
-                    <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#fff">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                              d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/>
+        <div style="width:100%;max-width:400px;display:flex;flex-direction:column;gap:20px;">
+
+            {{-- Logo / Brand --}}
+            <div style="text-align:center;">
+                <div style="display:inline-flex;align-items:center;justify-content:center;
+                            width:48px;height:48px;background:var(--red);border-radius:12px;
+                            margin-bottom:14px;">
+                    <svg width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="#fff" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                              d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2
+                                 M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/>
                     </svg>
                 </div>
-                <h1 style="font-size:22px;font-weight:700;color:var(--text);">Welcome back</h1>
+                <h1 style="font-size:22px;font-weight:700;color:var(--text);margin:0;">Welcome back</h1>
                 <p style="font-size:13px;color:var(--muted);margin-top:4px;">Sign in to your account</p>
             </div>
 
-            <div style="background:#fff;border-radius:14px;padding:28px;
-                        box-shadow:0 2px 12px rgba(0,0,0,.07);border:1px solid var(--border);">
+            {{-- Card --}}
+            <div class="card" style="border-radius:14px;overflow:hidden;">
 
-                @if (session('status'))
-                    <div style="background:var(--red-light);color:var(--red);font-size:13px;
-                                border-radius:8px;padding:10px 14px;margin-bottom:16px;">
-                        {{ session('status') }}
-                    </div>
-                @endif
+                {{-- Red top bar --}}
+                <div style="height:5px;background:var(--red);"></div>
 
-                <form method="POST" action="{{ route('login') }}"
-                      style="display:flex;flex-direction:column;gap:16px;">
-                    @csrf
+                <div class="card-body" style="padding:28px;">
 
-                    {{-- Email --}}
-                    <div>
-                        <label for="email" style="display:block;font-size:13px;font-weight:600;
-                                                   color:var(--text);margin-bottom:6px;">
-                            Email
-                        </label>
-                        <input id="email" type="email" name="email" value="{{ old('email') }}"
-                               required autofocus autocomplete="username"
-                               style="width:100%;border:1.5px solid var(--border);border-radius:8px;
-                                      padding:10px 14px;font-size:14px;font-family:inherit;
-                                      color:var(--text);background:#fff;outline:none;
-                                      transition:border-color .15s;"
-                               onfocus="this.style.borderColor='var(--red)'"
-                               onblur="this.style.borderColor='var(--border)'">
-                        @error('email')
-                            <p style="font-size:12px;color:var(--red);margin-top:4px;">{{ $message }}</p>
-                        @enderror
-                    </div>
-
-                    {{-- Password --}}
-                    <div>
-                        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
-                            <label for="password" style="font-size:13px;font-weight:600;color:var(--text);">
-                                Password
-                            </label>
-                            @if (Route::has('password.request'))
-                                <a href="{{ route('password.request') }}"
-                                   style="font-size:12px;color:var(--red);text-decoration:none;">
-                                    Forgot password?
-                                </a>
-                            @endif
+                    @if($errors->any())
+                        <div class="alert-error" style="margin-bottom:20px;">
+                            <ul style="list-style:disc;padding-left:16px;
+                                       display:flex;flex-direction:column;gap:4px;">
+                                @foreach($errors->all() as $error)
+                                    <li style="font-size:13px;">{{ $error }}</li>
+                                @endforeach
+                            </ul>
                         </div>
-                        <input id="password" type="password" name="password"
-                               required autocomplete="current-password"
-                               style="width:100%;border:1.5px solid var(--border);border-radius:8px;
-                                      padding:10px 14px;font-size:14px;font-family:inherit;
-                                      color:var(--text);background:#fff;outline:none;
-                                      transition:border-color .15s;"
-                               onfocus="this.style.borderColor='var(--red)'"
-                               onblur="this.style.borderColor='var(--border)'">
-                        @error('password')
-                            <p style="font-size:12px;color:var(--red);margin-top:4px;">{{ $message }}</p>
-                        @enderror
-                    </div>
+                    @endif
 
-                    {{-- Remember me --}}
-                    <div style="display:flex;align-items:center;gap:8px;">
-                        <input id="remember_me" type="checkbox" name="remember"
-                               style="width:15px;height:15px;accent-color:var(--red);cursor:pointer;">
-                        <label for="remember_me" style="font-size:13px;color:var(--muted);cursor:pointer;">
-                            Remember me
+                    @if(session('status'))
+                        <div class="alert-success" style="margin-bottom:20px;font-size:13px;">
+                            {{ session('status') }}
+                        </div>
+                    @endif
+
+                    <form action="{{ route('login') }}" method="POST"
+                          style="display:flex;flex-direction:column;gap:16px;">
+                        @csrf
+
+                        {{-- Email --}}
+                        <div style="display:flex;flex-direction:column;gap:6px;">
+                            <label for="email"
+                                   style="font-size:12px;font-weight:600;color:var(--text);
+                                          text-transform:uppercase;letter-spacing:.05em;">
+                                Email
+                            </label>
+                            <input type="email" name="email" id="email"
+                                   value="{{ old('email') }}"
+                                   required autofocus autocomplete="username"
+                                   placeholder="you@example.com"
+                                   style="width:100%;border:1.5px solid var(--border);border-radius:8px;
+                                          padding:10px 14px;font-size:14px;font-family:inherit;
+                                          color:var(--text);background:var(--bg);outline:none;
+                                          transition:border-color .15s;box-sizing:border-box;"
+                                   onfocus="this.style.borderColor='var(--red)'"
+                                   onblur="this.style.borderColor='var(--border)'">
+                        </div>
+
+                        {{-- Password --}}
+                        <div style="display:flex;flex-direction:column;gap:6px;">
+                            <div style="display:flex;align-items:center;justify-content:space-between;">
+                                <label for="password"
+                                       style="font-size:12px;font-weight:600;color:var(--text);
+                                              text-transform:uppercase;letter-spacing:.05em;">
+                                    Password
+                                </label>
+                                @if(Route::has('password.request'))
+                                    <a href="{{ route('password.request') }}"
+                                       style="font-size:12px;color:var(--red);text-decoration:none;"
+                                       onmouseenter="this.style.textDecoration='underline'"
+                                       onmouseleave="this.style.textDecoration='none'">
+                                        Forgot password?
+                                    </a>
+                                @endif
+                            </div>
+                            <input type="password" name="password" id="password"
+                                   required autocomplete="current-password"
+                                   placeholder="••••••••"
+                                   style="width:100%;border:1.5px solid var(--border);border-radius:8px;
+                                          padding:10px 14px;font-size:14px;font-family:inherit;
+                                          color:var(--text);background:var(--bg);outline:none;
+                                          transition:border-color .15s;box-sizing:border-box;"
+                                   onfocus="this.style.borderColor='var(--red)'"
+                                   onblur="this.style.borderColor='var(--border)'">
+                        </div>
+
+                        {{-- Remember me --}}
+                        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                            <input type="checkbox" name="remember"
+                                   style="width:15px;height:15px;accent-color:var(--red);cursor:pointer;">
+                            <span style="font-size:13px;color:var(--muted);">Remember me</span>
                         </label>
-                    </div>
 
-                    {{-- Submit --}}
-                    <button type="submit"
-                            style="width:100%;background:var(--red);color:#fff;border:none;
-                                   border-radius:8px;padding:11px;font-size:14px;font-weight:600;
-                                   font-family:inherit;cursor:pointer;transition:opacity .15s;"
-                            onmouseenter="this.style.opacity='.88'"
-                            onmouseleave="this.style.opacity='1'">
-                        Sign in
-                    </button>
-                </form>
+                        {{-- Submit --}}
+                        <button type="submit"
+                                style="width:100%;background:var(--red);color:#fff;border:none;
+                                       border-radius:8px;padding:11px;font-size:14px;font-weight:600;
+                                       font-family:inherit;cursor:pointer;transition:opacity .15s;
+                                       margin-top:4px;"
+                                onmouseenter="this.style.opacity='.88'"
+                                onmouseleave="this.style.opacity='1'">
+                            Sign in
+                        </button>
+                    </form>
+                </div>
             </div>
 
-            @if (Route::has('register'))
-                <p style="text-align:center;font-size:13px;color:var(--muted);margin-top:20px;">
+            {{-- Register link --}}
+            @if(Route::has('register'))
+                <p style="text-align:center;font-size:13px;color:var(--muted);">
                     Don't have an account?
                     <a href="{{ route('register') }}"
-                       style="color:var(--red);font-weight:600;text-decoration:none;">
-                        Register
+                       style="color:var(--red);font-weight:600;text-decoration:none;"
+                       onmouseenter="this.style.textDecoration='underline'"
+                       onmouseleave="this.style.textDecoration='none'">
+                        Create one
                     </a>
                 </p>
             @endif

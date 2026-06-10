@@ -57,7 +57,14 @@
                                  color:var(--text);background:#fff;outline:none;
                                  resize:vertical;box-shadow:0 1px 3px rgba(0,0,0,.08);">{{ old('content') }}</textarea>
 
-                <div>
+<input type="date" name="due_date" id="due_date"
+       value="{{ old('due_date') }}"
+       min="{{ date('Y-m-d') }}"
+       style="width:100%;border:none;border-radius:8px;
+              padding:11px 14px;font-size:14px;font-family:inherit;
+              color:var(--text);background:#fff;outline:none;
+              box-shadow:0 1px 3px rgba(0,0,0,.08);">                
+<div>
                     {{-- File upload --}}
                 <div>
                     <label for="files"
@@ -78,6 +85,7 @@
                            style="display:none;" onchange="showFiles(this)">
                     <ul id="file-list" style="margin-top:8px;display:flex;flex-direction:column;gap:4px;"></ul>
                 </div>
+                <br>
                     <button type="submit"
                             style="background:var(--red-dark);color:#fff;border:none;
                                    border-radius:8px;padding:9px 20px;font-size:13px;

@@ -56,4 +56,15 @@ class ClassesController extends Controller
 
         return redirect()->route('classes.index')->with('success', 'Class created successfully.');
     }
+    public function destroy(Classes $class)
+        {
+            abort_unless(
+                auth()->user()->isAdmin() || $class->user_id === auth()->id(),
+                403
+            );
+
+            $class->delete();
+
+            return redirect()->route('classes.index')->with('success', 'Class deleted.');
+        }
 }
