@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use App\Models\ActivityLog;
 
 class Classes extends Model
 {
@@ -36,5 +37,9 @@ class Classes extends Model
     public function students(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'class_student', 'class_id', 'user_id');
+    }
+    public function activityLogs(): HasMany
+    {
+        return $this->hasMany(ActivityLog::class, 'class_id');
     }
 }

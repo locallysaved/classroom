@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Classes;
 use App\Models\ActivityLog;
+use App\Models\Classes;
 use Illuminate\Http\Request;
 
 class JoinClassController extends Controller
@@ -29,9 +29,10 @@ class JoinClassController extends Controller
         $class->students()->attach($user->id);
 
         ActivityLog::create([
-            'user_id'     => $user->id,
-            'type'        => 'class_joined',
-            'description' => 'Joined class "' . $class->name . '"',
+            'user_id'  => $user->id,
+            'class_id' => $class->id,
+            'event'    => 'student_joined',
+            'meta'     => ['student_name' => $user->name],
         ]);
 
         return redirect()->route('classes.show', $class)->with('success', 'You have joined the class!');

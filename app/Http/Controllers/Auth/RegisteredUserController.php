@@ -37,7 +37,12 @@ class RegisteredUserController extends Controller
         event(new Registered($user));
 
         Auth::login($user);
-
+        
+        ActivityLog::create([
+            'user_id' => $user->id,
+            'event'   => 'user_registered',
+            'meta'    => ['name' => $user->name, 'role' => $user->role],
+        ]);
         return redirect(route('dashboard', absolute: false));
     }
 }

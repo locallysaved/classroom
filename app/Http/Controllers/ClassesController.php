@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ActivityLog;
 use App\Models\Classes;
 use Illuminate\Http\Request;
-use App\Models\ActivityLog;
 
 class ClassesController extends Controller
 {
@@ -25,15 +25,10 @@ class ClassesController extends Controller
     {
         $user = auth()->user();
 
-        if ($user->isTeacher() && $class->user_id !== $user->id) {
-            abort(403);
-        }
+        if ($user->isTeacher() && $class->user_id !== $user->id) abort(403);
+        if ($user->isStudent() && !$class->students()->where('user_id', $user->id)->exists()) abort(403);
 
-        if ($user->isStudent() && !$class->students()->where('user_id', $user->id)->exists()) {
-            abort(403);
-        }
-
-        $class->load(['tasks' => fn($q) => $q->withCount('files'), 'teacher', 'students']);
+        $class->load(['tasks.files.uploader', 'teacher']);
         return view('classes.show', compact('class'));
     }
 
@@ -50,13 +45,13 @@ class ClassesController extends Controller
         ]);
 
         $validated['user_id'] = auth()->id();
-
         $class = Classes::create($validated);
 
         ActivityLog::create([
-            'user_id'     => auth()->id(),
-            'type'        => 'class_created',
-            'description' => 'Created class "' . $class->name . '"',
+            'user_id'  => auth()->id(),
+            'class_id' => $class->id,
+            'event'    => 'class_created',
+            'meta'     => ['class_name' => $class->name],
         ]);
 
         return redirect()->route('classes.index')->with('success', 'Class created successfully.');
