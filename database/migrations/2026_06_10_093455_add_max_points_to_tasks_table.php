@@ -12,8 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('tasks', function (Blueprint $table) {
-            // in the migration up()
-            $table->date('due_date')->nullable();
+            $table->unsignedInteger('max_points')->nullable();
         });
     }
 

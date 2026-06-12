@@ -57,6 +57,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/tasks/{task}/solution', [TasksController::class, 'submitSolution'])->name('tasks.submitSolution');
     Route::post('/tasks/{task}/comment', [TasksController::class, 'storeComment'])->name('tasks.comment');
     Route::get('/solutions/{solution}/download', [TasksController::class, 'downloadSolution'])->name('solutions.download');
+    Route::patch('/solutions/{solution}/grade', [TasksController::class, 'gradeSolution'])->name('tasks.solutions.grade');
+    Route::delete('/solutions/{solution}', [TasksController::class, 'destroySolution'])->name('solutions.destroy');
 
     // Admin only
     Route::middleware(IsAdmin::class)->group(function () {

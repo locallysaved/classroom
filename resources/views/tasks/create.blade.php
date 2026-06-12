@@ -85,7 +85,13 @@
                            style="display:none;" onchange="showFiles(this)">
                     <ul id="file-list" style="margin-top:8px;display:flex;flex-direction:column;gap:4px;"></ul>
                 </div>
-                <br>
+                <input type="number" name="max_points" min="0" value="{{ old('max_points') }}"
+                    placeholder="max points (optional)"
+                    style="width:100%;border:none;border-radius:8px;
+                            padding:11px 14px;font-size:14px;font-family:inherit;
+                            color:var(--text);background:#fff;outline:none;
+                            box-shadow:0 1px 3px rgba(0,0,0,.08);box-sizing:border-box;">
+                    <br>
                     <button type="submit"
                             style="background:var(--red-dark);color:#fff;border:none;
                                    border-radius:8px;padding:9px 20px;font-size:13px;

@@ -10,6 +10,7 @@ use App\Models\TaskComment;
 use App\Models\Tasks;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class TasksController extends Controller
 {
@@ -27,6 +28,7 @@ class TasksController extends Controller
             'content'   => 'required|string',
             'due_date'  => 'nullable|date|after_or_equal:today',
             'files.*'   => 'nullable|file|max:20480',
+            'max_points' => 'nullable|integer|min:0',
         ]);
 
         $task = Tasks::create([
@@ -34,6 +36,7 @@ class TasksController extends Controller
             'name'       => $request->name,
             'content'    => $request->content,
             'due_date'   => $request->due_date,
+            'max_points' => $request->max_points,
             'date_added' => now(),
         ]);
 
@@ -97,15 +100,18 @@ class TasksController extends Controller
             $filename    = Str::uuid() . '.' . $file->getClientOriginalExtension();
             $destination = storage_path('app/solutions');
             if (!file_exists($destination)) mkdir($destination, 0755, true);
-            $file->move($destination, $filename);
+            $mimeType     = $file->getMimeType(); // grab before moving
+                $originalName = $file->getClientOriginalName();
+                $size         = $file->getSize();
+                $file->move($destination, $filename);
 
-            TaskSolution::create([
+                TaskSolution::create([
                 'task_id'       => $task->id,
                 'user_id'       => auth()->id(),
-                'original_name' => $file->getClientOriginalName(),
-                'filename'   => 'solutions/' . $filename,
-                'mime_type'     => $file->getMimeType(),
-                'size'          => $file->getSize(),
+                'original_name' => $originalName,
+                'stored_name'   => $filename,
+                'mime_type'     => $mimeType,
+                'size'          => $size,
             ]);
 
             ActivityLog::create([
@@ -162,10 +168,13 @@ class TasksController extends Controller
             403
         );
 
-        return response()->download(
-            storage_path('app/' . $solution->filename),
-            $solution->original_name
-        );
+        $path = storage_path('app/solutions/' . $solution->stored_name);
+
+        if (!$solution->stored_name || !file_exists($path)) {
+            return back()->with('error', 'File no longer exists.');
+        }
+
+        return response()->download($path, $solution->original_name);
     }
 
     public function destroy(Tasks $task)
@@ -180,4 +189,81 @@ class TasksController extends Controller
 
         return redirect()->route('classes.show', $classId)->with('success', 'Task deleted.');
     }
+    public function gradeSolution(Request $request, TaskSolution $solution)
+    {
+        abort_unless(
+            auth()->user()->isAdmin() ||
+            $solution->task->class->user_id === auth()->id(),
+            403
+        );
+
+        $request->validate([
+            'points' => 'nullable|integer|min:0|max:' . ($solution->task->max_points ?? 99999),
+        ]);
+
+        $solution->update(['points' => $request->points]);
+
+        return back()->with('success', 'Grade saved.');
+    }
+    public function destroySolution(TaskSolution $solution)
+    {
+        abort_unless(
+            $solution->user_id === auth()->id() ||
+            auth()->user()->isAdmin(),
+            403
+        );
+
+        if ($solution->stored_name) {
+            $path = storage_path('app/solutions/' . $solution->stored_name);
+            if (file_exists($path)) unlink($path);
+        }
+
+        $solution->delete();
+
+        return back()->with('success', 'File removed.');
+    }
+    public function storeFile(Request $request, Tasks $task)
+{
+    abort_unless(
+        auth()->user()->isAdmin() || $task->class->user_id === auth()->id(),
+        403
+    );
+
+    $request->validate(['files.*' => 'required|file|max:20480']);
+
+    foreach ($request->file('files', []) as $file) {
+        $filename     = Str::uuid() . '.' . $file->getClientOriginalExtension();
+        $destination  = storage_path('app/task-files');
+        $originalName = $file->getClientOriginalName();
+        $mimeType     = $file->getMimeType();
+        if (!file_exists($destination)) mkdir($destination, 0755, true);
+        $file->move($destination, $filename);
+
+        TaskFile::create([
+            'task_id'       => $task->id,
+            'user_id'       => auth()->id(),
+            'original_name' => $originalName,
+            'filename'      => 'task-files/' . $filename,
+            'mime_type'     => $mimeType,
+            'visibility'    => 'public',
+        ]);
+    }
+
+    return back()->with('success', 'Files attached.');
+}
+
+public function destroyFile(TaskFile $file)
+{
+    abort_unless(
+        auth()->user()->isAdmin() || $file->task->class->user_id === auth()->id(),
+        403
+    );
+
+    $path = storage_path('app/' . $file->filename);
+    if (file_exists($path)) unlink($path);
+
+    $file->delete();
+
+    return back()->with('success', 'File removed.');
+}
 }
